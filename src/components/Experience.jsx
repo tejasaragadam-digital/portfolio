@@ -74,14 +74,14 @@ const Experience = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="py-32 px-6 w-full max-w-5xl mx-auto relative z-10">
+    <section ref={containerRef} className="py-16 md:py-32 px-4 md:px-6 w-full max-w-5xl mx-auto relative z-10">
       
-      <div className="mb-24 md:text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
+      <div className="mb-12 md:mb-24 text-center md:text-center">
+        <h2 className="text-3xl md:text-5xl font-bold mb-4">
           Experience <span className="text-brand-violet">& Timeline</span>
         </h2>
-        <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-          A synchronized history tracking explicit growth mapping Developer logic alongside Marketing conversion pipelines natively.
+        <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
+          A synchronized history tracking explicit growth mapping Developer logic alongside Marketing conversion pipelines.
         </p>
       </div>
 
@@ -95,7 +95,7 @@ const Experience = () => {
           className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[4px] bg-gradient-to-b from-brand-violet to-brand-orange -translate-x-1/2 shadow-[0_0_20px_rgba(249,115,22,1)] rounded-full" 
         />
 
-        <div className="space-y-32">
+        <div className="space-y-16 md:space-y-32">
           {experiences.map((exp, idx) => {
             const isEven = idx % 2 === 0;
             const isDev = exp.type === 'dev';
@@ -121,16 +121,15 @@ const Experience = () => {
                   whileHover={{ scale: 1.05 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className={`w-full md:w-5/12 ml-20 md:ml-0 ${isEven ? 'md:pr-16 md:text-right' : 'md:pl-16 md:ml-auto'}`}
+                  className={`w-full md:w-5/12 ml-16 md:ml-0 ${isEven ? 'md:pr-16 md:text-right' : 'md:pl-16 md:ml-auto'}`}
                 >
                   <div className={`glass p-8 md:p-10 rounded-3xl border-2 border-${accentClass}/40 hover:border-${accentClass} hover:${borderGlow} transition-all duration-300 backdrop-blur-3xl bg-brand-black/60 relative overflow-hidden transform group-hover:-translate-y-2`}>
                      {/* Ambient card glow background interpolation mapping natively */}
                      <div className={`absolute inset-0 bg-gradient-to-br from-${accentClass}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                     
-                    <span className={`text-${accentClass} font-mono text-sm mb-4 block font-black tracking-widest uppercase origin-left`}>{exp.period || exp.date}</span>
-                    <h3 className="text-3xl font-black text-white mb-2 leading-tight relative Z-10 drop-shadow-md">{exp.role}</h3>
-                    <h4 className={`text-white/60 text-sm font-bold mb-5 uppercase tracking-[0.2em] relative Z-10`}>{exp.company}</h4>
-                    <p className="text-gray-300 text-lg leading-relaxed relative z-10 font-medium">{exp.description || exp.desc}</p>
+                                         <span className={`text-${accentClass} font-mono text-xs md:text-sm mb-3 md:mb-4 block font-black tracking-widest uppercase origin-left`}>{exp.period || exp.date}</span>
+                     <h3 className="text-xl md:text-3xl font-black text-white mb-2 leading-tight relative z-10 drop-shadow-md">{exp.role}</h3>
+                     <h4 className={`text-white/60 text-xs md:text-sm font-bold mb-3 md:mb-5 uppercase tracking-[0.2em] relative z-10`}>{exp.company}</h4>
+                     <p className="text-gray-300 text-sm md:text-lg leading-relaxed relative z-10 font-medium">{exp.description || exp.desc}</p>
                   </div>
                 </motion.div>
               </div>

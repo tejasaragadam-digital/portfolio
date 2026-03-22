@@ -91,36 +91,75 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-brand-black/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8">
-          {navLinks.map((link) => {
-            const isAnchor = link.href.startsWith('/#');
-            if (isAnchor) {
-              return (
-                <a 
-                  key={link.name} 
-                  href={link.href.replace('/', '')} 
-                  onClick={(e) => handleSmoothScroll(e, link.anchorTarget)} 
-                  className="text-2xl font-bold text-gray-300 hover:text-white"
+      {/* Mobile Menu — smooth slide in from top */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="fixed inset-0 z-40 bg-brand-black/98 backdrop-blur-2xl flex flex-col items-center justify-center gap-8"
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-white pointer-events-auto"
+            >
+              <X className="w-7 h-7" />
+            </button>
+
+            {/* Logo */}
+            <div className="text-3xl font-black tracking-tighter mb-4 text-white">
+              TEJA<span className="text-brand-orange">.</span>
+            </div>
+
+            {/* Links */}
+            {navLinks.map((link, i) => {
+              const isAnchor = link.href.startsWith('/#');
+              return isAnchor ? (
+                <motion.a
+                  key={link.name}
+                  href={link.href.replace('/', '')}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07 }}
+                  onClick={(e) => handleSmoothScroll(e, link.anchorTarget)}
+                  className="text-3xl font-bold text-gray-200 hover:text-white transition-colors"
                 >
                   {link.name}
-                </a>
+                </motion.a>
+              ) : (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07 }}
+                >
+                  <Link
+                    to={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`text-3xl font-bold transition-colors ${location.pathname === link.href ? 'text-white' : 'text-gray-300 hover:text-white'}`}
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
               );
-            }
-            return (
-              <Link 
-                key={link.name} 
-                to={link.href}
+            })}
+
+            {/* CTA */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+              <Link
+                to="/#contact"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-2xl font-bold text-gray-300 hover:text-white"
+                className="mt-4 px-8 py-4 bg-gradient-to-r from-brand-violet to-brand-orange text-white font-bold rounded-full text-lg"
               >
-                {link.name}
+                Let's Talk
               </Link>
-            );
-          })}
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
