@@ -74,9 +74,9 @@ const Experience = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="py-32 px-6 w-full max-w-5xl mx-auto relative z-10">
+    <section ref={containerRef} className="py-12 md:py-32 px-6 w-full max-w-5xl mx-auto relative z-10">
       
-      <div className="mb-24 md:text-center">
+      <div className="mb-12 md:mb-24 md:text-center">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">
           Experience <span className="text-brand-violet">& Timeline</span>
         </h2>

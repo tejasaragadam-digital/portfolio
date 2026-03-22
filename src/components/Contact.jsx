@@ -30,7 +30,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 px-6 relative w-full bg-brand-black text-white z-10">
+    <section id="contact" className="py-12 md:py-24 px-6 relative w-full bg-brand-black text-white z-10">
       <div className="max-w-4xl mx-auto">
         <motion.div animate={{ y: [15, -15, 15] }} transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}>
           <motion.div

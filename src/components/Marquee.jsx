@@ -37,7 +37,7 @@ export const Marquee = ({ children, baseVelocity = 2, direction = "left" }) => {
   });
 
   return (
-    <div className="overflow-hidden whitespace-nowrap m-0 flex flex-nowrap border-y border-white/5 py-6 bg-brand-black/20 w-[100vw] relative left-1/2 -translate-x-1/2 shadow-inner pointer-events-none backdrop-blur-sm z-10 my-20">
+    <div className="overflow-hidden whitespace-nowrap m-0 flex flex-nowrap border-y border-white/5 py-6 bg-brand-black/20 w-[100vw] relative left-1/2 -translate-x-1/2 shadow-inner pointer-events-none backdrop-blur-sm z-10 my-8 md:my-20">
       <motion.div 
         className="flex font-black text-6xl md:text-8xl tracking-tighter uppercase text-transparent items-center" 
         style={{ x, WebkitTextStroke: '1px rgba(255,255,255,0.15)' }}

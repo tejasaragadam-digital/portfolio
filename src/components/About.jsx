@@ -35,14 +35,14 @@ const About = () => {
   };
 
   return (
-    <section id="about" className="py-24 px-6 relative w-full bg-brand-black/0 text-white z-10">
+    <section id="about" className="py-12 md:py-24 px-6 relative w-full bg-brand-black/0 text-white z-10">
       <div className="max-w-7xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 inline-block w-full"
+          className="text-center mb-8 md:mb-16 inline-block w-full"
         >
           <motion.h2 
             className="text-3xl md:text-5xl font-bold mb-4 inline-block text-white"

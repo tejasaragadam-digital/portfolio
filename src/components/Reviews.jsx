@@ -47,9 +47,9 @@ const Reviews = () => {
   }, [reviews.length]);
 
   return (
-    <section className="py-24 px-6 relative w-full z-10 overflow-hidden">
+    <section className="py-12 md:py-24 px-6 relative w-full z-10 overflow-hidden">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 md:mb-12">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             <Typewriter text="Client Experiences" speed={0.05} />
           </h2>
