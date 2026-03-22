@@ -55,11 +55,10 @@ const Contact = () => {
                 <label className="text-sm font-medium text-gray-300 ml-1">Your Name</label>
                 <input 
                   type="text" 
-                  name={`rnd_name_${Math.random()}`}
+                  name="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={handleChange}
                   required
-                  autoComplete="new-password"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-violet focus:ring-1 focus:ring-brand-violet transition-all"
                   placeholder="John Doe"
                 />
@@ -67,12 +66,11 @@ const Contact = () => {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-300 ml-1">Email Address</label>
                 <input 
-                  type="text" 
-                  name={`rnd_email_${Math.random()}`}
+                  type="email" 
+                  name="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={handleChange}
                   required
-                  autoComplete="new-password"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
                   placeholder="john@example.com"
                 />
@@ -82,12 +80,11 @@ const Contact = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300 ml-1">Message</label>
               <textarea 
-                name={`rnd_msg_${Math.random()}`}
+                name="message"
                 value={formData.message}
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
+                onChange={handleChange}
                 required
                 rows={5}
-                autoComplete="new-password"
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-violet focus:ring-1 focus:ring-brand-violet transition-all resize-none"
                 placeholder="Tell me about your project..."
               />
