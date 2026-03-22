@@ -39,13 +39,12 @@ const Reviews = () => {
     loadReviews();
   }, []);
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % reviews.length);
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
-  };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % (reviews.length || 1));
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [reviews.length]);
 
   return (
     <section className="py-24 px-6 relative w-full z-10 overflow-hidden">
@@ -74,35 +73,14 @@ const Reviews = () => {
                   transition={{ duration: 0.4 }}
                 >
                   <p className="text-xl md:text-3xl text-gray-200 mb-8 leading-relaxed italic font-light">
-                    "{reviews[currentIndex].content || reviews[currentIndex].text}"
+                    "{reviews[currentIndex]?.content || reviews[currentIndex]?.text || 'Loading testimonial...'}"
                   </p>
                   <div>
-                    <h4 className="text-brand-orange font-bold text-lg">{reviews[currentIndex].name}</h4>
-                    <span className="text-gray-400 text-sm tracking-widest uppercase">{reviews[currentIndex].role || reviews[currentIndex].company}</span>
+                    <h4 className="text-brand-orange font-bold text-lg">{reviews[currentIndex]?.name}</h4>
+                    <span className="text-gray-400 text-sm tracking-widest uppercase">{reviews[currentIndex]?.role || reviews[currentIndex]?.company}</span>
                   </div>
                 </motion.div>
               </AnimatePresence>
-            </div>
-
-            <div className="absolute top-1/2 -translate-y-1/2 left-4 md:-left-6 pointer-events-auto">
-              <motion.button 
-                onClick={handlePrev}
-                whileHover={{ scale: 1.15, boxShadow: "0px 0px 20px rgba(139,92,246, 0.8)", backgroundColor: "rgba(139,92,246, 0.5)", borderColor: "rgba(139,92,246, 0.8)" }}
-                transition={{ type: "spring", stiffness: 500, damping: 10 }}
-                className="p-3 bg-brand-black/80 border border-white/10 rounded-full text-white backdrop-blur-md shadow-xl transition-colors pointer-events-auto"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </motion.button>
-            </div>
-            <div className="absolute top-1/2 -translate-y-1/2 right-4 md:-right-6 pointer-events-auto">
-              <motion.button 
-                onClick={handleNext}
-                whileHover={{ scale: 1.15, boxShadow: "0px 0px 20px rgba(249,115,22, 0.8)", backgroundColor: "rgba(249,115,22, 0.5)", borderColor: "rgba(249,115,22, 0.8)" }}
-                transition={{ type: "spring", stiffness: 500, damping: 10 }}
-                className="p-3 bg-brand-black/80 border border-white/10 rounded-full text-white backdrop-blur-md shadow-xl transition-colors pointer-events-auto"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </motion.button>
             </div>
           </div>
         </motion.div>
