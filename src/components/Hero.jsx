@@ -40,7 +40,7 @@ const Hero = () => {
             <motion.h1 
               whileHover={{ scale: 1.05, textShadow: "0px 0px 20px rgba(139,92,246, 0.8)" }}
               transition={{ type: "spring", stiffness: 500, damping: 10 }}
-              className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-snug min-h-[3.5rem] md:min-h-[4rem] origin-left inline-block ${isTitleComplete ? 'animate-rainbow' : ''}`}
+              className={`text-3xl md:text-6xl lg:text-7xl font-bold mb-6 leading-snug min-h-[4rem] origin-left inline-block ${isTitleComplete ? 'animate-rainbow' : ''}`}
             >
               <Typewriter 
                 text="Hello, I'm Teja" 
@@ -50,7 +50,7 @@ const Hero = () => {
               />
             </motion.h1>
             
-            <p className="text-gray-300 text-base md:text-xl lg:text-2xl max-w-2xl mx-auto md:mx-0 mb-8 md:mb-10 leading-relaxed min-h-[5rem] md:min-h-[6rem]">
+            <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto md:mx-0 mb-10 leading-relaxed min-h-[6rem]">
               <Typewriter 
                 text="I am a developer and digital marketer. I build digital engines that merge technical flair with strategic growth." 
                 delay={1.5} 
@@ -96,7 +96,7 @@ const Hero = () => {
           className="flex-1 w-full flex justify-center md:justify-end shrink-0 relative z-10 pointer-events-none"
         >
           <motion.div 
-            className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px]"
+            className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px]"
             animate={{ y: [-20, 20, -20] }}
             transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
           >

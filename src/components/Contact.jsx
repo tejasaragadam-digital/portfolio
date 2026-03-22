@@ -41,7 +41,7 @@ const Contact = () => {
             className="glass rounded-[2.5rem] p-8 md:p-14 border border-brand-violet/20"
           >
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
               <GlitchText text="Start a" /> <span className="text-brand-orange"><GlitchText text="Project" /></span>
             </h2>
             <p className="text-gray-400">

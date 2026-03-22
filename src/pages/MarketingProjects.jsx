@@ -46,7 +46,7 @@ const MarketingProjects = () => {
           <motion.h1 
             whileHover={{ scale: 1.05, textShadow: "0px 0px 20px rgba(249,115,22,0.5)" }}
             transition={{ type: "spring", stiffness: 500, damping: 10 }}
-            className="text-5xl md:text-6xl font-bold mb-4 text-brand-orange inline-block origin-left"
+            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-brand-orange inline-block origin-left"
           >
             <MagneticText text="Digital Marketing" />
           </motion.h1>

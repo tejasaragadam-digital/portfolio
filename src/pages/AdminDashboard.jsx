@@ -273,7 +273,7 @@ const AdminDashboard = () => {
     <section className="min-h-screen pt-32 px-6 w-full max-w-7xl mx-auto z-10 relative pb-24">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-violet to-brand-orange inline-block">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-violet to-brand-orange inline-block">
             Command Center
           </h1>
           <p className="text-gray-400 mt-2">Manage your entire portfolio universe natively securely.</p>

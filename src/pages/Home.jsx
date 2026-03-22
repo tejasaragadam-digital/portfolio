@@ -13,17 +13,17 @@ const Home = () => {
 
   return (
     <div className="relative w-full min-h-screen">
-      {/* Massive Parallax Backgrounds — only on md+ to avoid mobile overflow */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden md:flex flex-col justify-between py-32 items-center opacity-[0.45]">
+      {/* Massive Parallax Backgrounds */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 flex flex-col justify-between py-24 md:py-32 items-center opacity-[0.45]">
         <motion.h1 
           style={{ x: x1 }} 
-          className="text-[20rem] font-black tracking-tighter text-brand-violet/20 whitespace-nowrap origin-center drop-shadow-[0_0_50px_rgba(139,92,246,0.3)] mix-blend-screen"
+          className="text-[10rem] md:text-[20rem] font-black tracking-tighter text-brand-violet/20 whitespace-nowrap origin-center drop-shadow-[0_0_50px_rgba(139,92,246,0.3)] mix-blend-screen"
         >
           DEVELOPER
         </motion.h1>
         <motion.h1 
           style={{ x: x2, WebkitTextStroke: '4px rgba(249,115,22,0.3)' }} 
-          className="text-[20rem] font-black tracking-tighter text-transparent whitespace-nowrap origin-center mix-blend-screen drop-shadow-[0_0_50px_rgba(249,115,22,0.5)]"
+          className="text-[10rem] md:text-[20rem] font-black tracking-tighter text-transparent whitespace-nowrap origin-center mix-blend-screen drop-shadow-[0_0_50px_rgba(249,115,22,0.5)]"
         >
           MARKETER
         </motion.h1>

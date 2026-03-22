@@ -155,7 +155,7 @@ function App() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
             onClick={handleLetsTalk}
-            className="text-[14vw] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-brand-violet to-brand-orange text-center leading-none mb-12 select-none cursor-pointer hover:opacity-80 transition-opacity"
+            className="text-[12vw] md:text-[14vw] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-brand-violet to-brand-orange text-center leading-none mb-12 select-none cursor-pointer hover:opacity-80 transition-opacity whitespace-nowrap"
           >
             LET'S TALK
           </motion.div>

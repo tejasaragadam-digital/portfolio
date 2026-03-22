@@ -76,7 +76,7 @@ const WebProjects = () => {
           <motion.h1 
             whileHover={{ scale: 1.05, textShadow: "0px 0px 20px rgba(139,92,246,0.5)" }}
             transition={{ type: "spring", stiffness: 500, damping: 10 }}
-            className="text-5xl md:text-6xl font-bold mb-4 text-brand-violet inline-block origin-left"
+            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 text-brand-violet inline-block origin-left"
           >
             <MagneticText text="Web Development" />
           </motion.h1>

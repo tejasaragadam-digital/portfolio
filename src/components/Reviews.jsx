@@ -51,7 +51,7 @@ const Reviews = () => {
     <section className="py-24 px-6 relative w-full z-10 overflow-hidden">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
             <Typewriter text="Client Experiences" speed={0.05} />
           </h2>
           <p className="text-gray-400">Hear from people who have scaled their businesses with me.</p>
@@ -61,7 +61,7 @@ const Reviews = () => {
           animate={{ y: [-15, 15, -15] }} 
           transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
         >
-          <div className="relative glass rounded-3xl p-6 md:p-12 border-t border-brand-violet/30 mx-4 md:mx-0">
+          <div className="relative glass rounded-3xl p-8 md:p-12 border-t border-brand-violet/30">
             <Quote className="absolute top-6 left-6 w-12 h-12 text-white/5" />
             
             <div className="min-h-[200px] flex items-center justify-center text-center px-4 md:px-12 relative z-10">
@@ -73,7 +73,7 @@ const Reviews = () => {
                   exit={{ opacity: 0, scale: 1.05 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <p className="text-lg md:text-3xl text-gray-200 mb-6 md:mb-8 leading-relaxed italic font-light">
+                  <p className="text-xl md:text-3xl text-gray-200 mb-8 leading-relaxed italic font-light">
                     "{reviews[currentIndex].content || reviews[currentIndex].text}"
                   </p>
                   <div>

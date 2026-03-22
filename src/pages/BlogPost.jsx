@@ -57,7 +57,7 @@ const BlogPost = () => {
             <span className="text-gray-400 text-sm font-mono tracking-wider">• {post.readTime}</span>
          </div>
          
-         <h1 className="text-4xl md:text-6xl font-black text-white mb-8 leading-[1.1] tracking-tight drop-shadow-md">{post.title}</h1>
+         <h1 className="text-3xl md:text-6xl font-black text-white mb-8 leading-[1.1] tracking-tight drop-shadow-md">{post.title}</h1>
          
          <div className="flex items-center gap-4 mb-16 border-b border-white/10 pb-8">
             <div className="w-12 h-12 rounded-full bg-brand-violet/20 border border-brand-violet/40 overflow-hidden flex items-center justify-center font-bold text-brand-violet text-xl shadow-[0_0_15px_rgba(139,92,246,0.4)]">

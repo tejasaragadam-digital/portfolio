@@ -66,7 +66,7 @@ const Services = () => {
         <motion.h1 
           whileHover={{ scale: 1.05, textShadow: "0px 0px 20px rgba(255,255,255,0.4)" }}
           transition={{ type: "spring", stiffness: 500, damping: 10 }}
-          className="text-5xl md:text-7xl font-black mb-6 inline-block origin-center tracking-tight"
+          className="text-3xl sm:text-4xl md:text-7xl font-black mb-6 inline-block origin-center tracking-tight"
         >
           <MagneticText text="Engagements & Services" />
         </motion.h1>
