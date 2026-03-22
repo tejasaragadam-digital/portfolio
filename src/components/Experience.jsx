@@ -121,7 +121,7 @@ const Experience = () => {
                   whileHover={{ scale: 1.05 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className={`w-full md:w-5/12 ml-20 md:ml-0 ${isEven ? 'md:pr-16 md:text-right' : 'md:pl-16 md:ml-auto'}`}
+                  className={`flex-1 min-w-0 ml-16 md:ml-0 md:w-5/12 ${isEven ? 'md:pr-16 md:text-right md:flex-initial' : 'md:pl-16 md:ml-auto md:flex-initial'}`}
                 >
                   <div className={`glass p-8 md:p-10 rounded-3xl border-2 border-${accentClass}/40 hover:border-${accentClass} hover:${borderGlow} transition-all duration-300 backdrop-blur-3xl bg-brand-black/60 relative overflow-hidden transform group-hover:-translate-y-2`}>
                      {/* Ambient card glow background interpolation mapping natively */}
