@@ -56,7 +56,7 @@ const Preloader = () => {
               transition={{ times: [0, 0.1, 0.9, 1], duration: 1.8, delay: 0.2 }}
               className="font-mono text-brand-orange text-sm tracking-widest text-center"
             >
-              INITIALIZING WEBGL SUBSYSTEMS...
+              HOLD TIGHT...
             </motion.div>
           </div>
           
