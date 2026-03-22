@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchCollection } from '../lib/appwrite';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { Quote } from 'lucide-react';
 import Typewriter from './Typewriter';
 
 const Reviews = () => {
