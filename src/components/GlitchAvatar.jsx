@@ -71,6 +71,8 @@ const GlitchAvatar = ({ src }) => {
         <img 
           src={src} 
           alt="Teja Profile"
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 z-0"
         />
 

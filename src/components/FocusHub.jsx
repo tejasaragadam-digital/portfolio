@@ -239,6 +239,8 @@ const FocusHub = () => {
                         <img 
                           src="/alien.png" 
                           alt="Meditating Zen Avatar" 
+                          loading="lazy"
+                          decoding="async"
                           className="w-[65%] h-[65%] object-contain filter contrast-[1.3] brightness-110 mix-blend-screen z-10 drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] pointer-events-none"
                         />
                      </motion.div>

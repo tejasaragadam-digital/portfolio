@@ -107,6 +107,8 @@ const Hero = () => {
               <img 
                 src={profileUrl} 
                 alt="Teja Profile"
+                fetchpriority="high"
+                decoding="async"
                 className="w-full h-full object-cover rounded-full mix-blend-normal opacity-90 transition-all duration-700 hover:opacity-100 hover:scale-105"
               />
             </div>

@@ -15,7 +15,7 @@ export const VelocityImage = ({ src, alt, className = "" }) => {
 
   return (
     <motion.div style={{ skew }} className={`overflow-hidden rounded-2xl ${className}`}>
-      <img src={src} alt={alt} className="w-full h-full object-cover origin-center scale-[1.05]" />
+      <img src={src} alt={alt} loading="lazy" decoding="async" className="w-full h-full object-cover origin-center scale-[1.05]" />
     </motion.div>
   );
 };
