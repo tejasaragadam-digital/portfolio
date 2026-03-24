@@ -4,24 +4,6 @@ import { submitContactForm } from '../lib/appwrite';
 import { Send, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 import GlitchText from './GlitchText';
-import emailjs from '@emailjs/browser';
-
-const sendThankYouEmail = async (toName, toEmail) => {
-  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-  const templateId = import.meta.env.VITE_EMAILJS_THANKYOU_TEMPLATE_ID;
-  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-  if (!serviceId || !templateId || !publicKey) return; // silently skip if not configured
-  try {
-    await emailjs.send(serviceId, templateId, {
-      to_name: toName,
-      to_email: toEmail,
-      from_name: 'Teja Kumar',
-    }, publicKey);
-  } catch (e) {
-    console.warn('EmailJS thank-you send failed (non-critical):', e.text);
-  }
-};
-
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
@@ -31,7 +13,6 @@ const Contact = () => {
     setStatus('loading');
     try {
       await submitContactForm(formData);
-      await sendThankYouEmail(formData.name, formData.email);
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 5000);

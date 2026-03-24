@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { logoutAdmin, fetchCollection, createDoc, updateDoc, deleteDoc, uploadFile, createReplyDoc } from '../lib/appwrite';
 import { LogOut, Settings, PenTool, Code, Target, Plus, Trash2, Edit2, Briefcase, Clock, MessageSquare, Save, X, FileUp, Loader2, Mail, Archive, Inbox, MailOpen, User, Megaphone, RefreshCw, ChevronUp, ChevronDown, Send, Download } from 'lucide-react';
-import emailjs from '@emailjs/browser';
 import MagneticButton from '../components/MagneticButton';
 import LiveAnalytics from '../components/LiveAnalytics';
 
@@ -213,31 +212,16 @@ const AdminDashboard = () => {
   const handleSendReply = async () => {
     if (!replyingTo || !replyMsg.trim()) return;
     setReplySending(true);
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_REPLY_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-    if (!serviceId || !templateId || !publicKey) {
-      alert('EmailJS not configured. Add VITE_EMAILJS_* env vars to send emails.');
-      setReplySending(false);
-      return;
-    }
     try {
-      await emailjs.send(serviceId, templateId, {
-        to_name: replyingTo.name || 'there',
-        to_email: replyingTo.email,
-        message: replyMsg,
-        from_name: 'Teja Kumar',
-      }, publicKey);
-      
       // Save reply to database for history/tracking
       await createReplyDoc(replyingTo.email, replyMsg);
       
-      alert(`Reply sent to ${replyingTo.email} ✅`);
+      alert(`Reply saved to database for ${replyingTo.email} ✅`);
       setReplyingTo(null);
       setReplyMsg('');
     } catch (e) {
       console.error(e);
-      alert('Failed to send reply: ' + (e.text || e.message));
+      alert('Failed to save reply: ' + (e.text || e.message));
     } finally {
       setReplySending(false);
     }
