@@ -1,4 +1,5 @@
-import { Client, Databases, Account, ID, Storage, Query } from 'appwrite';
+import { Client, Databases, Account, ID, Storage, Query, Permission, Role } from 'appwrite';
+export { ID, Query, Permission, Role };
 
 const client = new Client()
     .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
@@ -54,18 +55,18 @@ export const fetchCollection = async (collectionId) => {
     }
 };
 
-export const createDoc = async (collectionId, data) => {
+export const createDoc = async (collectionId, data, permissions = []) => {
     try {
-        return await databases.createDocument(DATABASE_ID, collectionId, ID.unique(), data);
+        return await databases.createDocument(DATABASE_ID, collectionId, ID.unique(), data, permissions);
     } catch (error) {
         console.error(`Error creating document in ${collectionId}:`, error);
         throw error;
     }
 };
 
-export const updateDoc = async (collectionId, documentId, data) => {
+export const updateDoc = async (collectionId, documentId, data, permissions = null) => {
     try {
-        return await databases.updateDocument(DATABASE_ID, collectionId, documentId, data);
+        return await databases.updateDocument(DATABASE_ID, collectionId, documentId, data, permissions || undefined);
     } catch (error) {
         console.error(`Error updating document ${documentId}:`, error);
         throw error;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { logoutAdmin, fetchCollection, createDoc, updateDoc, deleteDoc, uploadFile, createReplyDoc } from '../lib/appwrite';
+import { logoutAdmin, fetchCollection, createDoc, updateDoc, deleteDoc, uploadFile, createReplyDoc, Permission, Role } from '../lib/appwrite';
 import { LogOut, Settings, PenTool, Code, Target, Plus, Trash2, Edit2, Briefcase, Clock, MessageSquare, Save, X, FileUp, Loader2, Mail, Archive, Inbox, MailOpen, User, Megaphone, RefreshCw, ChevronUp, ChevronDown, Send, Download } from 'lucide-react';
 import MagneticButton from '../components/MagneticButton';
 import LiveAnalytics from '../components/LiveAnalytics';
@@ -130,10 +130,15 @@ const AdminDashboard = () => {
       }
 
       const payload = { [fieldKey]: value };
+      const permissions = [
+        Permission.read(Role.any()),
+        Permission.write(Role.users()), // Authenticated users (admin) can write
+      ];
+      
       if (profileRecord) {
-        await updateDoc(colId, profileRecord.$id, payload);
+        await updateDoc(colId, profileRecord.$id, payload, permissions);
       } else {
-        await createDoc(colId, payload);
+        await createDoc(colId, payload, permissions);
       }
       await loadProfile();
       setProfileEditing(p => { const n = { ...p }; delete n[fieldKey]; return n; });
