@@ -84,22 +84,42 @@ export const deleteDoc = async (collectionId, documentId) => {
 // Helper function to submit contact form
 export const submitContactForm = async (data) => {
     const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID || 'PENDING_DATABASE_ID';
-    const collectionId = import.meta.env.VITE_APPWRITE_LEADS_COLLECTION_ID || 'PENDING_LEADS_ID';
+    const leadsId = import.meta.env.VITE_APPWRITE_LEADS_COLLECTION_ID || 'PENDING_LEADS_ID';
+    const submissionsId = import.meta.env.VITE_APPWRITE_SUBMISSIONS_COLLECTION_ID || 'form_submissions';
     
     try {
-        const response = await databases.createDocument(
-            databaseId,
-            collectionId,
-            ID.unique(),
-            {
-                name: data.name,
-                email: data.email,
-                message: data.message
-            }
-        );
-        return response;
+        // 1. Save to Leads Collection
+        const leadsP = databases.createDocument(databaseId, leadsId, ID.unique(), {
+            name: data.name,
+            email: data.email,
+            message: data.message
+        });
+
+        // 2. Save to Form Submissions Collection
+        const submissionsP = databases.createDocument(databaseId, submissionsId, ID.unique(), {
+            name: data.name,
+            email: data.email,
+            message: data.message
+        });
+
+        const [leadsRes] = await Promise.all([leadsP, submissionsP]);
+        return leadsRes;
     } catch (error) {
         console.error("Appwrite error submitting form:", error);
+        throw error;
+    }
+};
+
+export const createReplyDoc = async (toEmail, replyContent) => {
+    const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID || 'PENDING_DATABASE_ID';
+    const repliesId = import.meta.env.VITE_APPWRITE_REPLIES_COLLECTION_ID || 'replies';
+    try {
+        return await databases.createDocument(databaseId, repliesId, ID.unique(), {
+            to: toEmail,
+            reply: replyContent
+        });
+    } catch (error) {
+        console.error("Error creating reply doc:", error);
         throw error;
     }
 };

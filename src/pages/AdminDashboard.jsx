@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { logoutAdmin, fetchCollection, createDoc, updateDoc, deleteDoc, uploadFile } from '../lib/appwrite';
+import { logoutAdmin, fetchCollection, createDoc, updateDoc, deleteDoc, uploadFile, createReplyDoc } from '../lib/appwrite';
 import { LogOut, Settings, PenTool, Code, Target, Plus, Trash2, Edit2, Briefcase, Clock, MessageSquare, Save, X, FileUp, Loader2, Mail, Archive, Inbox, MailOpen, User, Megaphone, RefreshCw, ChevronUp, ChevronDown, Send, Download } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import MagneticButton from '../components/MagneticButton';
@@ -228,6 +228,10 @@ const AdminDashboard = () => {
         message: replyMsg,
         from_name: 'Teja Kumar',
       }, publicKey);
+      
+      // Save reply to database for history/tracking
+      await createReplyDoc(replyingTo.email, replyMsg);
+      
       alert(`Reply sent to ${replyingTo.email} ✅`);
       setReplyingTo(null);
       setReplyMsg('');
