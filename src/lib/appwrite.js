@@ -96,14 +96,20 @@ export const submitContactForm = async (data) => {
             message: data.message
         });
 
-        // 2. Save to Form Submissions Collection
-        const submissionsP = databases.createDocument(databaseId, submissionsId, ID.unique(), {
-            name: data.name,
-            email: data.email,
-            message: data.message
-        });
+        // 2. Save to Form Submissions Collection (wrapped in try-catch to avoid breaking the main flow)
+        const saveToSubmissions = async () => {
+            try {
+                await databases.createDocument(databaseId, submissionsId, ID.unique(), {
+                    name: data.name,
+                    email: data.email,
+                    message: data.message
+                });
+            } catch (e) {
+                console.warn("Secondary save to form_submissions failed (likely permissions):", e.message);
+            }
+        };
 
-        const [leadsRes] = await Promise.all([leadsP, submissionsP]);
+        const [leadsRes] = await Promise.all([leadsP, saveToSubmissions()]);
         return leadsRes;
     } catch (error) {
         console.error("Appwrite error submitting form:", error);

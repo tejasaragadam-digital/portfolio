@@ -26,34 +26,34 @@ async function fixPermissions() {
             // Keep existing admin permissions
             Permission.write(Role.users()), // Allow any logged in user (admin) to update
         ]);
-        console.log('✅ Profile collection is now publicly readable.');
+        const submissionsId = process.env.VITE_APPWRITE_SUBMISSIONS_COLLECTION_ID || 'form_submissions';
+        const repliesId = process.env.VITE_APPWRITE_REPLIES_COLLECTION_ID || 'replies';
+        const leadsId = process.env.VITE_APPWRITE_LEADS_COLLECTION_ID;
 
-        // Also fix existing documents in the collection
-        const docs = await db.listDocuments(dbId, profileColId);
-        for (const doc of docs.documents) {
-            console.log(`🔧 Updating permissions for document ${doc.$id}...`);
-            await db.updateDocument(dbId, profileColId, doc.$id, undefined, [
-                Permission.read(Role.any()),
-                Permission.update(Role.users()),
-                Permission.delete(Role.users()),
-            ]);
-        }
-        if (pdfBucketId) {
-            await storage.updateBucket(pdfBucketId, 'PDFs', [
-                Permission.read(Role.any()),
+        console.log(`🔧 Updating ${submissionsId} permissions (Any: Create)...`);
+        await db.updateCollection(dbId, submissionsId, 'Form Submissions', [
+            Permission.create(Role.any()),
+            Permission.read(Role.users()),
+            Permission.write(Role.users()),
+        ]);
+
+        console.log(`🔧 Updating ${repliesId} permissions (Users: Create)...`);
+        await db.updateCollection(dbId, repliesId, 'Replies', [
+            Permission.create(Role.users()),
+            Permission.read(Role.users()),
+            Permission.write(Role.users()),
+        ]);
+
+        if (leadsId) {
+            console.log(`🔧 Ensuring ${leadsId} allows public CREATE...`);
+            await db.updateCollection(dbId, leadsId, 'Leads', [
+                Permission.create(Role.any()),
+                Permission.read(Role.users()),
                 Permission.write(Role.users()),
             ]);
-            console.log('✅ PDF bucket is now publicly readable.');
-        }
-        if (generalBucketId) {
-            await storage.updateBucket(generalBucketId, 'General Assets', [
-                Permission.read(Role.any()),
-                Permission.write(Role.users()),
-            ]);
-            console.log('✅ General bucket (avatars) is now publicly readable.');
         }
 
-        console.log('\n🎉 Permissions fixed! Now make sure to upload your resume in the Admin Panel.');
+        console.log('\n🎉 All tracking permissions fixed!');
     } catch (e) {
         console.error('❌ Error fixing permissions:', e.message);
     }
