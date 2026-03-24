@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { logoutAdmin, fetchCollection, createDoc, updateDoc, deleteDoc, uploadFile } from '../lib/appwrite';
-import { LogOut, Settings, PenTool, Code, Target, Plus, Trash2, Edit2, Briefcase, Clock, MessageSquare, Save, X, FileUp, Loader2, Mail, Archive, Inbox, MailOpen, User, Megaphone } from 'lucide-react';
+import { LogOut, Settings, PenTool, Code, Target, Plus, Trash2, Edit2, Briefcase, Clock, MessageSquare, Save, X, FileUp, Loader2, Mail, Archive, Inbox, MailOpen, User, Megaphone, RefreshCw, ChevronUp, ChevronDown, Send, Download } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import MagneticButton from '../components/MagneticButton';
 import LiveAnalytics from '../components/LiveAnalytics';
 
@@ -58,6 +59,7 @@ const SCHEMAS = {
   general: [
     { key: 'name', label: 'Display Name (optional)', type: 'text' },
     { key: 'avatar_id', label: 'Profile Avatar Image', type: 'file', accept: 'image/*' },
+    { key: 'resume_id', label: 'Resume / CV (PDF)', type: 'file', accept: '.pdf' },
     { key: 'linkedin', label: 'LinkedIn Profile URL', type: 'text' },
     { key: 'instagram', label: 'Instagram Profile URL', type: 'text' }
   ]
@@ -99,8 +101,11 @@ const AdminDashboard = () => {
   // Profile-specific state for General Settings
   const [profileRecord, setProfileRecord] = useState(null);
   const [profileSaving, setProfileSaving] = useState({});
-  const [profileEditing, setProfileEditing] = useState({}); // key -> draft value
+  const [profileEditing, setProfileEditing] = useState({});
   const [profileFile, setProfileFile] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null); // lead record being replied to
+  const [replyMsg, setReplyMsg] = useState('');
+  const [replySending, setReplySending] = useState(false);
 
   const loadProfile = async () => {
     const colId = import.meta.env.VITE_APPWRITE_PROFILE_COLLECTION_ID;
@@ -115,8 +120,12 @@ const AdminDashboard = () => {
       const colId = import.meta.env.VITE_APPWRITE_PROFILE_COLLECTION_ID;
       let value = profileEditing[fieldKey] ?? (profileRecord ? profileRecord[fieldKey] : '');
       
-      if (fieldKey === 'avatar_id' && profileFile) {
-        const uploaded = await uploadFile(import.meta.env.VITE_APPWRITE_GENERAL_BUCKET_ID, profileFile);
+      if (fieldKey === 'avatar_id' && profileFile?.key === 'avatar_id' && profileFile.file) {
+        const uploaded = await uploadFile(import.meta.env.VITE_APPWRITE_GENERAL_BUCKET_ID, profileFile.file);
+        value = uploaded.$id;
+        setProfileFile(null);
+      } else if (fieldKey === 'resume_id' && profileFile?.key === 'resume_id' && profileFile.file) {
+        const uploaded = await uploadFile(import.meta.env.VITE_APPWRITE_PDF_BUCKET_ID, profileFile.file);
         value = uploaded.$id;
         setProfileFile(null);
       }
@@ -176,6 +185,58 @@ const AdminDashboard = () => {
   const handleLogout = async () => {
     await logoutAdmin();
     navigate('/login');
+  };
+
+  const handleRefresh = () => {
+    if (activeTab === 'general') loadProfile();
+    else loadData();
+  };
+
+  const handleReorder = async (idx, direction) => {
+    const colId = getCollectionId(activeTab);
+    if (!colId) return;
+    const newRecords = [...records];
+    const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= newRecords.length) return;
+    // Swap display_order values
+    const aOrder = newRecords[idx].display_order ?? idx;
+    const bOrder = newRecords[targetIdx].display_order ?? targetIdx;
+    try {
+      await updateDoc(colId, newRecords[idx].$id, { display_order: bOrder });
+      await updateDoc(colId, newRecords[targetIdx].$id, { display_order: aOrder });
+      // Swap in local state
+      [newRecords[idx], newRecords[targetIdx]] = [newRecords[targetIdx], newRecords[idx]];
+      setRecords([...newRecords]);
+    } catch (e) { console.error('Reorder failed:', e); }
+  };
+
+  const handleSendReply = async () => {
+    if (!replyingTo || !replyMsg.trim()) return;
+    setReplySending(true);
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_REPLY_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    if (!serviceId || !templateId || !publicKey) {
+      alert('EmailJS not configured. Add VITE_EMAILJS_* env vars to send emails.');
+      setReplySending(false);
+      return;
+    }
+    try {
+      await emailjs.send(serviceId, templateId, {
+        to_name: replyingTo.name || 'there',
+        to_email: replyingTo.email,
+        message: replyMsg,
+        from_name: 'Teja Kumar',
+      }, publicKey);
+      alert(`Reply sent to ${replyingTo.email} ✅`);
+      setReplyingTo(null);
+      setReplyMsg('');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to send reply: ' + (e.text || e.message));
+    } finally {
+      setReplySending(false);
+    }
   };
 
   const tabs = [
@@ -335,12 +396,13 @@ const AdminDashboard = () => {
                           { key: 'name', label: 'Display Name', icon: User, type: 'text', placeholder: 'e.g. Teja Kumar' },
                           { key: 'linkedin', label: 'LinkedIn URL', icon: () => <span className="text-sm font-bold">in</span>, type: 'text', placeholder: 'https://linkedin.com/in/...' },
                           { key: 'instagram', label: 'Instagram URL', icon: () => <span className="text-sm font-bold">ig</span>, type: 'text', placeholder: 'https://instagram.com/...' },
-                          { key: 'avatar_id', label: 'Profile Avatar Image', icon: MailOpen, type: 'file' },
-                        ].map(({ key, label, icon: Icon, type, placeholder }) => {
+                          { key: 'avatar_id', label: 'Profile Avatar Image', icon: MailOpen, type: 'file', accept: 'image/*' },
+                          { key: 'resume_id', label: 'Resume / CV (PDF)', icon: Download, type: 'file', accept: '.pdf' },
+                        ].map(({ key, label, icon: Icon, type, placeholder, accept }) => {
                           const currentVal = profileRecord?.[key];
                           const draftVal = profileEditing[key];
                           const isSaving = !!profileSaving[key];
-                          const isDirty = key in profileEditing || (key === 'avatar_id' && profileFile);
+                          const isDirty = key in profileEditing || (profileFile?.key === key);
 
                           return (
                             <div key={key} className="p-5 rounded-2xl bg-black/40 border border-white/8 hover:border-white/15 transition-colors">
@@ -352,7 +414,7 @@ const AdminDashboard = () => {
                               </div>
 
                               {/* Current value display */}
-                              {currentVal && key !== 'avatar_id' && (
+                              {currentVal && key !== 'avatar_id' && key !== 'resume_id' && (
                                 <p className="text-xs text-gray-500 mb-2 pl-1 truncate">Current: <span className="text-gray-400">{currentVal}</span></p>
                               )}
                               {currentVal && key === 'avatar_id' && (
@@ -367,8 +429,10 @@ const AdminDashboard = () => {
                                 {type === 'file' ? (
                                   <label className="flex-1 cursor-pointer bg-brand-violet/10 border border-brand-violet/30 rounded-xl px-4 py-3 flex items-center gap-2 hover:bg-brand-violet/20 transition-all">
                                     <FileUp className="w-4 h-4 text-brand-violet" />
-                                    <span className="text-sm text-brand-violet truncate">{profileFile ? profileFile.name : (currentVal ? 'Replace image...' : 'Upload image...')}</span>
-                                    <input type="file" accept="image/*" className="hidden" onChange={e => setProfileFile(e.target.files[0])} />
+                                    <span className="text-sm text-brand-violet truncate">
+                                      {profileFile?.key === key ? profileFile.name : (currentVal ? `Replace ${accept?.includes('pdf') ? 'PDF' : 'image'}...` : `Upload ${accept?.includes('pdf') ? 'PDF' : 'image'}...`)}
+                                    </span>
+                                    <input type="file" accept={accept || 'image/*'} className="hidden" onChange={e => setProfileFile({ key, file: e.target.files[0], name: e.target.files[0]?.name })} />
                                   </label>
                                 ) : (
                                   <input
@@ -479,6 +543,14 @@ const AdminDashboard = () => {
                                     </div>
                                     {/* Actions */}
                                     <div className="flex md:flex-col gap-2 items-center md:items-end shrink-0">
+                                    <motion.button
+                                        onClick={() => { setReplyingTo(rec); setReplyMsg(''); }}
+                                        whileHover={{ scale: 1.1 }}
+                                        title="Reply via Email"
+                                        className="p-3 rounded-xl bg-white/5 hover:bg-brand-violet/20 hover:text-brand-violet text-gray-400 transition-colors cursor-pointer"
+                                      >
+                                        <Send className="w-5 h-5" />
+                                      </motion.button>
                                       <motion.button
                                         onClick={() => handleArchive(rec.$id)}
                                         whileHover={{ scale: 1.1 }}
@@ -547,6 +619,18 @@ const AdminDashboard = () => {
                                 <p className="text-sm text-gray-500">ID: {rec.$id} • Created natively tracking cloud bounds</p>
                                 </div>
                                 <div className="flex items-center gap-2">
+                                {activeTab === 'experience' && (
+                                  <>
+                                    <motion.button onClick={() => handleReorder(idx, 'up')} disabled={idx === 0} whileHover={{ scale: 1.1 }}
+                                      className="p-2 rounded-xl bg-white/5 hover:bg-brand-violet/20 hover:text-brand-violet text-gray-400 transition-colors cursor-pointer disabled:opacity-20">
+                                      <ChevronUp className="w-4 h-4" />
+                                    </motion.button>
+                                    <motion.button onClick={() => handleReorder(idx, 'down')} disabled={idx === records.length - 1} whileHover={{ scale: 1.1 }}
+                                      className="p-2 rounded-xl bg-white/5 hover:bg-brand-violet/20 hover:text-brand-violet text-gray-400 transition-colors cursor-pointer disabled:opacity-20">
+                                      <ChevronDown className="w-4 h-4" />
+                                    </motion.button>
+                                  </>
+                                )}
                                 <motion.button 
                                     onClick={() => handleEdit(rec)}
                                     whileHover={{ scale: 1.1 }} 
@@ -711,6 +795,64 @@ const AdminDashboard = () => {
           </AnimatePresence>
 
         </div>
+      </div>
+
+      {/* Reply Modal */}
+      <AnimatePresence>
+        {replyingTo && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center px-4"
+            onClick={(e) => e.target === e.currentTarget && setReplyingTo(null)}
+          >
+            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9 }}
+              className="glass rounded-3xl p-8 border border-brand-violet/30 w-full max-w-lg"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Send className="w-5 h-5 text-brand-violet" />
+                  Reply to {replyingTo.name}
+                </h3>
+                <button onClick={() => setReplyingTo(null)} className="text-gray-400 hover:text-white p-1 cursor-pointer">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-sm text-gray-400 mb-1">To: <span className="text-brand-orange">{replyingTo.email}</span></p>
+              <p className="text-xs text-gray-600 mb-4 italic">Their message: "{replyingTo.message?.slice(0, 80)}{replyingTo.message?.length > 80 ? '...' : ''}"</p>
+              <textarea
+                value={replyMsg}
+                onChange={e => setReplyMsg(e.target.value)}
+                rows={5}
+                placeholder="Type your reply here..."
+                className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-brand-violet focus:ring-1 focus:ring-brand-violet transition-all resize-none pointer-events-auto mb-4"
+              />
+              <div className="flex gap-3 justify-end">
+                <button onClick={() => setReplyingTo(null)} className="px-5 py-3 rounded-xl text-gray-400 hover:text-white transition-colors cursor-pointer">Cancel</button>
+                <motion.button
+                  onClick={handleSendReply}
+                  disabled={replySending || !replyMsg.trim()}
+                  whileHover={{ scale: 1.03 }}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-violet text-white font-bold cursor-pointer disabled:opacity-40"
+                >
+                  {replySending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {replySending ? 'Sending...' : 'Send Reply'}
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Refresh Button */}
+      <div className="flex justify-center mt-8 pb-8">
+        <motion.button
+          onClick={handleRefresh}
+          whileHover={{ scale: 1.05, boxShadow: "0px 0px 20px rgba(139,92,246,0.5)" }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-2 px-6 py-3 rounded-full glass border border-white/10 text-gray-400 hover:text-white hover:border-brand-violet/50 transition-all cursor-pointer"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Refresh Data
+        </motion.button>
       </div>
     </section>
   );

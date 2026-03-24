@@ -24,6 +24,7 @@ const WebProjects = lazy(() => import('./pages/WebProjects'));
 const MarketingProjects = lazy(() => import('./pages/MarketingProjects'));
 const Services = lazy(() => import('./pages/Services'));
 const Login = lazy(() => import('./pages/Login'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -133,6 +134,7 @@ function App() {
             <Route path="/services" element={<Suspense fallback={null}><PageTransition><Services /></PageTransition></Suspense>} />
             
             <Route path="/login" element={<Suspense fallback={null}><PageTransition><Login /></PageTransition></Suspense>} />
+            <Route path="/reset-password" element={<Suspense fallback={null}><PageTransition><ResetPassword /></PageTransition></Suspense>} />
             <Route 
               path="/admin" 
               element={

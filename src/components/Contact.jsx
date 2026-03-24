@@ -4,21 +4,34 @@ import { submitContactForm } from '../lib/appwrite';
 import { Send, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 import GlitchText from './GlitchText';
+import emailjs from '@emailjs/browser';
+
+const sendThankYouEmail = async (toName, toEmail) => {
+  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const templateId = import.meta.env.VITE_EMAILJS_THANKYOU_TEMPLATE_ID;
+  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+  if (!serviceId || !templateId || !publicKey) return; // silently skip if not configured
+  try {
+    await emailjs.send(serviceId, templateId, {
+      to_name: toName,
+      to_email: toEmail,
+      from_name: 'Teja Kumar',
+    }, publicKey);
+  } catch (e) {
+    console.warn('EmailJS thank-you send failed (non-critical):', e.text);
+  }
+};
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('loading');
-    
     try {
       await submitContactForm(formData);
+      await sendThankYouEmail(formData.name, formData.email);
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 5000);
@@ -55,10 +68,11 @@ const Contact = () => {
                 <label className="text-sm font-medium text-gray-300 ml-1">Your Name</label>
                 <input 
                   type="text" 
-                  name="name"
+                  name={`rnd_name_${Math.random()}`}
                   value={formData.name}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
                   required
+                  autoComplete="new-password"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-violet focus:ring-1 focus:ring-brand-violet transition-all"
                   placeholder="John Doe"
                 />
@@ -66,11 +80,12 @@ const Contact = () => {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-300 ml-1">Email Address</label>
                 <input 
-                  type="email" 
-                  name="email"
+                  type="text" 
+                  name={`rnd_email_${Math.random()}`}
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                   required
+                  autoComplete="new-password"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
                   placeholder="john@example.com"
                 />
@@ -80,11 +95,12 @@ const Contact = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300 ml-1">Message</label>
               <textarea 
-                name="message"
+                name={`rnd_msg_${Math.random()}`}
                 value={formData.message}
-                onChange={handleChange}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
                 required
                 rows={5}
+                autoComplete="new-password"
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-violet focus:ring-1 focus:ring-brand-violet transition-all resize-none"
                 placeholder="Tell me about your project..."
               />

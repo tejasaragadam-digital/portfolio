@@ -2,19 +2,28 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Typewriter from './Typewriter';
 import MagneticButton from './MagneticButton';
-import { fetchCollection, getFileViewUrl } from '../lib/appwrite';
+import { fetchCollection, getFileViewUrl, getFileDownloadUrl } from '../lib/appwrite';
+import { Download } from 'lucide-react';
 
 const Hero = () => {
   const [isTitleComplete, setIsTitleComplete] = useState(false);
   const [profileUrl, setProfileUrl] = useState('/profile.jpg');
+  const [resumeUrl, setResumeUrl] = useState(null);
 
   useEffect(() => {
      const fetchProfile = async () => {
        try {
           const profileData = await fetchCollection(import.meta.env.VITE_APPWRITE_PROFILE_COLLECTION_ID);
-          if (profileData && profileData.length > 0 && profileData[0].avatar_id) {
-             const customAvatar = getFileViewUrl(import.meta.env.VITE_APPWRITE_GENERAL_BUCKET_ID, profileData[0].avatar_id);
-             if (customAvatar) setProfileUrl(customAvatar);
+          if (profileData && profileData.length > 0) {
+            const profile = profileData[0];
+            if (profile.avatar_id) {
+              const customAvatar = getFileViewUrl(import.meta.env.VITE_APPWRITE_GENERAL_BUCKET_ID, profile.avatar_id);
+              if (customAvatar) setProfileUrl(customAvatar);
+            }
+            if (profile.resume_id) {
+              const resumeDownload = getFileDownloadUrl(import.meta.env.VITE_APPWRITE_PDF_BUCKET_ID, profile.resume_id);
+              if (resumeDownload) setResumeUrl(resumeDownload);
+            }
           }
        } catch (err) { console.warn("Using default fallback avatar natively."); }
      };
@@ -84,6 +93,20 @@ const Hero = () => {
                   Explore My Work
                 </motion.a>
               </MagneticButton>
+              {resumeUrl && (
+                <MagneticButton>
+                  <motion.a
+                    href={resumeUrl}
+                    download
+                    whileHover={{ scale: 1.05, boxShadow: "0px 0px 20px rgba(139,92,246, 0.6)" }}
+                    transition={{ type: "spring", stiffness: 500, damping: 10 }}
+                    className="flex items-center gap-2 px-8 py-4 bg-white/5 border border-brand-violet/40 text-white font-semibold rounded-full hover:bg-brand-violet/10 transition-colors duration-300 backdrop-blur-sm pointer-events-auto"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download CV
+                  </motion.a>
+                </MagneticButton>
+              )}
             </motion.div>
           </motion.div>
         </motion.div>

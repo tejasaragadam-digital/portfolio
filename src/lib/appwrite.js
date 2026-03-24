@@ -1,4 +1,4 @@
-import { Client, Databases, Account, ID, Storage } from 'appwrite';
+import { Client, Databases, Account, ID, Storage, Query } from 'appwrite';
 
 const client = new Client()
     .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
@@ -8,25 +8,19 @@ export const databases = new Databases(client);
 export const account = new Account(client);
 export const storage = new Storage(client);
 
-// Auth Helpers
-export const sendOTP = async (email) => {
-    try {
-        const token = await account.createEmailToken(ID.unique(), email);
-        return token;
-    } catch (error) {
-        console.error("Appwrite OTP send failed:", error);
-        throw error;
-    }
+// Auth Helpers — Password Based
+export const loginWithPassword = async (email, password) => {
+    const session = await account.createEmailPasswordSession(email, password);
+    return session;
 };
 
-export const verifyOTP = async (userId, secret) => {
-    try {
-        const session = await account.createSession(userId, secret);
-        return session;
-    } catch (error) {
-        console.error("Appwrite OTP verify failed:", error);
-        throw error;
-    }
+export const sendPasswordReset = async (email) => {
+    const resetUrl = `${window.location.origin}/reset-password`;
+    await account.createRecovery(email, resetUrl);
+};
+
+export const confirmPasswordReset = async (userId, secret, newPassword) => {
+    await account.updateRecovery(userId, secret, newPassword);
 };
 
 export const logoutAdmin = async () => {
@@ -46,8 +40,6 @@ export const getCurrentUser = async () => {
 };
 
 // Generic CRUD Operations
-import { Query } from 'appwrite';
-
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID || 'PENDING_DATABASE_ID';
 
 export const fetchCollection = async (collectionId) => {
